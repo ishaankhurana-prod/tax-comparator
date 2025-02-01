@@ -1,5 +1,29 @@
 import streamlit as st
 import pandas as pd
+import base64
+
+# Function to create the Indian flag background CSS
+def add_bg_with_transparency():
+    return """
+    <style>
+    .stApp {
+        background-image: linear-gradient(
+            rgba(255, 153, 51, 0.2),
+            rgba(255, 255, 255, 0.2),
+            rgba(19, 136, 8, 0.2)
+        );
+        background-size: cover;
+    }
+    
+    .creator-text {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.5);
+    }
+    </style>
+    """
 
 def calculate_hra(rent_paid, hra_received, basic_salary):
     annual_rent_paid = rent_paid * 12
@@ -47,7 +71,11 @@ def compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_sa
     better_option = "Old Regime" if tax_old < tax_new else "New Regime"
     return tax_old, tax_new, better_option
 
+# Apply the background and creator text
 st.set_page_config(page_title="Tax Regime Comparator", layout="wide")
+st.markdown(add_bg_with_transparency(), unsafe_allow_html=True)
+st.markdown('<div class="creator-text">Made by Share Slayer</div>', unsafe_allow_html=True)
+
 st.title("💰 Tax Regime Comparator: Old vs New")
 
 st.markdown("### Enter Your Details")
