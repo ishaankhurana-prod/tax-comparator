@@ -47,31 +47,38 @@ def compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_sa
     better_option = "Old Regime" if tax_old < tax_new else "New Regime"
     return tax_old, tax_new, better_option
 
-# Streamlit UI Styling
-st.set_page_config(page_title="Tax Regime Comparator", layout="centered")
+st.set_page_config(page_title="Tax Regime Comparator", layout="wide")
 st.title("💰 Tax Regime Comparator: Old vs New")
 st.markdown("Compare which tax regime is better for you!")
 
-st.sidebar.header("Enter Your Details")
-income = st.sidebar.number_input("Annual Gross Income (₹)", min_value=0, value=1200000)
-std_deduction = st.sidebar.radio("Apply Standard Deduction (₹75,000)?", ["Yes", "No"]) == "Yes"
+# Layout
+col1, col2, col3 = st.columns([1, 1, 1])
 
-st.sidebar.subheader("HRA Details")
-rent_paid = st.sidebar.number_input("Monthly Rent Paid (₹)", min_value=0, value=20000)
-hra_received = st.sidebar.number_input("Monthly HRA Received (₹)", min_value=0, value=12500)
-basic_salary = st.sidebar.number_input("Monthly Basic Salary (₹)", min_value=0, value=50000)
+with col1:
+    income = st.number_input("Annual Gross Income (₹)", min_value=0, value=1200000)
+    std_deduction = st.radio("Apply Standard Deduction (₹75,000)?", ["Yes", "No"]) == "Yes"
 
-st.sidebar.subheader("Old Regime Deductions")
-deductions = {
-    "80C": st.sidebar.number_input("80C Investments (₹)", min_value=0, value=150000),
-    "80D": st.sidebar.number_input("80D (Health Insurance) (₹)", min_value=0, value=25000),
-    "80DDB": st.sidebar.number_input("80DDB (Medical Treatment) (₹)", min_value=0, value=40000),
-    "80G": st.sidebar.number_input("80G (Donations) (₹)", min_value=0, value=10000),
-    "Home Loan Interest": st.sidebar.number_input("Home Loan Interest (₹)", min_value=0, value=200000),
-    "TTA": st.sidebar.number_input("TTA (Savings Interest) (₹)", min_value=0, value=10000),
-}
+with col2:
+    st.subheader("HRA Details")
+    rent_paid = st.number_input("Monthly Rent Paid (₹)", min_value=0, value=20000)
+    hra_received = st.number_input("Monthly HRA Received (₹)", min_value=0, value=12500)
+    basic_salary = st.number_input("Monthly Basic Salary (₹)", min_value=0, value=50000)
 
-if st.sidebar.button("Compare Tax Regimes"):
+with col3:
+    st.subheader("Deductions (Old Regime)")
+    deductions = {
+        "PPF": st.number_input("PPF (₹)", min_value=0, value=50000),
+        "EPF": st.number_input("EPF (₹)", min_value=0, value=30000),
+        "NSC": st.number_input("NSC (₹)", min_value=0, value=20000),
+        "ELSS": st.number_input("ELSS (₹)", min_value=0, value=25000),
+        "Life Insurance": st.number_input("Life Insurance (₹)", min_value=0, value=15000),
+        "FD (5-year)": st.number_input("FD (5-year) (₹)", min_value=0, value=20000),
+        "Tuition Fees": st.number_input("Tuition Fees (₹)", min_value=0, value=50000),
+        "Home Loan Principal": st.number_input("Home Loan Principal (₹)", min_value=0, value=30000),
+        "Others": st.number_input("Other 80C Deductions (₹)", min_value=0, value=10000),
+    }
+
+if st.button("Compare Tax Regimes"):
     tax_old, tax_new, better_option = compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_salary, deductions)
     
     st.subheader("📊 Comparison Results")
