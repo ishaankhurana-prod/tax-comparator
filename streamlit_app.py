@@ -50,21 +50,18 @@ def compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_sa
 st.set_page_config(page_title="Tax Regime Comparator", layout="wide")
 st.title("💰 Tax Regime Comparator: Old vs New")
 
-# Layout Adjustments for Single Screen Fit
 st.markdown("### Enter Your Details")
-col1, col2, col3 = st.columns([1, 1, 1])
+col1, col2 = st.columns([1, 1])
 
 with col1:
+    st.markdown("### Income & HRA Details")
     income = st.number_input("Annual Gross Income (₹)", min_value=0, value=1200000)
     std_deduction = st.radio("Apply Standard Deduction (₹75,000)?", ["Yes", "No"], horizontal=True) == "Yes"
-
-with col2:
-    st.markdown("### HRA Details")
     rent_paid = st.number_input("Monthly Rent Paid (₹)", min_value=0, value=20000)
     hra_received = st.number_input("Monthly HRA Received (₹)", min_value=0, value=12500)
     basic_salary = st.number_input("Monthly Basic Salary (₹)", min_value=0, value=50000)
 
-with col3:
+with col2:
     st.markdown("### Deductions (Old Regime)")
     deductions = {
         "PPF": st.number_input("PPF (₹)", min_value=0, value=50000, step=1000),
