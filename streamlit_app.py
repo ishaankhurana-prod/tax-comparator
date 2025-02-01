@@ -50,6 +50,14 @@ def compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_sa
 st.set_page_config(page_title="Tax Regime Comparator", layout="wide")
 st.title("💰 Tax Regime Comparator: Old vs New")
 
+col_top1, col_top2 = st.columns([3, 1])
+with col_top2:
+    if st.button("Compare Tax Regimes"):
+        tax_old, tax_new, better_option = compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_salary, deductions)
+        st.metric(label="Old Regime Tax", value=f"₹{tax_old:,.2f}")
+        st.metric(label="New Regime Tax", value=f"₹{tax_new:,.2f}")
+        st.success(f"🎯 **Better Option: {better_option}**")
+
 st.markdown("### Enter Your Details")
 col1, col2 = st.columns([1, 1])
 
@@ -79,20 +87,3 @@ with col2:
             "Home Loan Principal": st.number_input("Home Loan Principal (₹)", min_value=0, value=30000, step=1000),
             "Others": st.number_input("Other 80C Deductions (₹)", min_value=0, value=10000, step=1000),
         })
-
-st.markdown("---")
-
-if st.button("Compare Tax Regimes"):
-    tax_old, tax_new, better_option = compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_salary, deductions)
-    
-    st.markdown("### 📊 Comparison Results")
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.metric(label="Old Regime Tax", value=f"₹{tax_old:,.2f}")
-    
-    with col2:
-        st.metric(label="New Regime Tax", value=f"₹{tax_new:,.2f}")
-    
-    with col3:
-        st.success(f"🎯 **Better Option: {better_option}**")
