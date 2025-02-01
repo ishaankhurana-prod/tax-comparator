@@ -63,17 +63,22 @@ with col1:
 
 with col2:
     st.markdown("### Deductions (Old Regime)")
-    deductions = {
-        "PPF": st.number_input("PPF (₹)", min_value=0, value=50000, step=1000),
-        "EPF": st.number_input("EPF (₹)", min_value=0, value=30000, step=1000),
-        "NSC": st.number_input("NSC (₹)", min_value=0, value=20000, step=1000),
-        "ELSS": st.number_input("ELSS (₹)", min_value=0, value=25000, step=1000),
-        "Life Insurance": st.number_input("Life Insurance (₹)", min_value=0, value=15000, step=1000),
-        "FD (5-year)": st.number_input("FD (5-year) (₹)", min_value=0, value=20000, step=1000),
-        "Tuition Fees": st.number_input("Tuition Fees (₹)", min_value=0, value=50000, step=1000),
-        "Home Loan Principal": st.number_input("Home Loan Principal (₹)", min_value=0, value=30000, step=1000),
-        "Others": st.number_input("Other 80C Deductions (₹)", min_value=0, value=10000, step=1000),
-    }
+    col2a, col2b = st.columns(2)
+    with col2a:
+        deductions = {
+            "PPF": st.number_input("PPF (₹)", min_value=0, value=50000, step=1000),
+            "EPF": st.number_input("EPF (₹)", min_value=0, value=30000, step=1000),
+            "NSC": st.number_input("NSC (₹)", min_value=0, value=20000, step=1000),
+            "ELSS": st.number_input("ELSS (₹)", min_value=0, value=25000, step=1000),
+        }
+    with col2b:
+        deductions.update({
+            "Life Insurance": st.number_input("Life Insurance (₹)", min_value=0, value=15000, step=1000),
+            "FD (5-year)": st.number_input("FD (5-year) (₹)", min_value=0, value=20000, step=1000),
+            "Tuition Fees": st.number_input("Tuition Fees (₹)", min_value=0, value=50000, step=1000),
+            "Home Loan Principal": st.number_input("Home Loan Principal (₹)", min_value=0, value=30000, step=1000),
+            "Others": st.number_input("Other 80C Deductions (₹)", min_value=0, value=10000, step=1000),
+        })
 
 st.markdown("---")
 
