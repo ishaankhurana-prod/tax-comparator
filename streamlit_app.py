@@ -103,30 +103,20 @@ with col1:
 
 with col2:
     st.markdown("### Deductions (Old Regime)")
-    col2a, col2b = st.columns(2)
-    with col2a:
-        deductions = {
-            "PPF": st.number_input("PPF (₹)", min_value=0, value=50000, step=1000),
-            "EPF": st.number_input("EPF (₹)", min_value=0, value=30000, step=1000),
-            "NSC": st.number_input("NSC (₹)", min_value=0, value=20000, step=1000),
-            "ELSS": st.number_input("ELSS (₹)", min_value=0, value=25000, step=1000),
-        }
-    with col2b:
-        deductions.update({
-            "Life Insurance": st.number_input("Life Insurance (₹)", min_value=0, value=15000, step=1000),
-            "FD (5-year)": st.number_input("FD (5-year) (₹)", min_value=0, value=20000, step=1000),
-            "Home Loan Principal": st.number_input("Home Loan Principal (₹)", min_value=0, value=30000, step=1000),
-            "Others": st.number_input("Other 80C Deductions (₹)", min_value=0, value=10000, step=1000),
-        })
+    deductions = {}
+    for deduction in ["PPF", "EPF", "NSC", "ELSS", "Life Insurance", "FD (5-year)", "Home Loan Principal", "Others"]:
+        deductions[deduction] = st.number_input(f"{deduction} (₹)", min_value=0, value=20000, step=1000)
 
-col_top1, col_top2 = st.columns([3, 1])
-with col_top2:
-    if st.button("Compare Tax Regimes"):
+if st.button("Compare Tax Regimes"):
+    with st.spinner("Generating tax advice..."):
         tax_old, tax_new, better_option = compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_salary, deductions)
+        advice = get_tax_advice(deductions)
+    
+    col_result1, col_result2 = st.columns([1, 1])
+    with col_result1:
         st.metric(label="Old Regime Tax", value=f"₹{tax_old:,.2f}")
         st.metric(label="New Regime Tax", value=f"₹{tax_new:,.2f}")
         st.success(f"🎯 **Better Option: {better_option}**")
-
-        advice = get_tax_advice(deductions)
+    with col_result2:
         st.markdown("### 📢 Tax Saving Advice")
         st.info(advice)
