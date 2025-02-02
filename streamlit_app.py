@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import base64
 import google.generativeai as genai
+import os
 
 # Function to create the Indian flag background CSS
 def add_bg_with_transparency():
@@ -73,7 +74,8 @@ def compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_sa
     return tax_old, tax_new, better_option
 
 def get_tax_advice(deductions):
-    genai.configure(api_key="AIzaSyBbYmZsxYFBVlfRDm14VwVlXNpxoiUYfmc")
+    
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
     model = genai.GenerativeModel("gemini-2.0-flash-exp")
     prompt = f"Based on these deductions: {deductions}, what are some additional ways to save tax in India?"
     response = model.generate_content(prompt)
