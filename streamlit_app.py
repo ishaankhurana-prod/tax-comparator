@@ -91,32 +91,32 @@ col1, col2 = st.columns([1, 1])
 
 with col1:
     st.markdown("### Income & HRA Details")
-    income = st.number_input("Annual Gross Income (₹)", min_value=0, value=1200000)
+    income = st.number_input("Annual Gross Income (₹)", min_value=0, value=0)
     std_deduction = st.radio("Apply Standard Deduction (₹75,000)?", ["Yes", "No"], horizontal=True) == "Yes"
     col1a, col1b, col1c = st.columns(3)
     with col1a:
-        rent_paid = st.number_input("Rent Paid (₹)", min_value=0, value=20000)
+        rent_paid = st.number_input("Rent Paid (₹)", min_value=0, value=0)
     with col1b:
-        hra_received = st.number_input("HRA Received (₹)", min_value=0, value=12500)
+        hra_received = st.number_input("HRA Received (₹)", min_value=0, value=0)
     with col1c:
-        basic_salary = st.number_input("Basic Salary (₹)", min_value=0, value=50000)
+        basic_salary = st.number_input("Basic Salary (₹)", min_value=0, value=0)
 
 with col2:
     st.markdown("### Deductions (Old Regime)")
     col2a, col2b = st.columns(2)
     with col2a:
         deductions = {
-            "PPF": st.number_input("PPF (₹)", min_value=0, value=50000, step=1000),
-            "EPF": st.number_input("EPF (₹)", min_value=0, value=30000, step=1000),
-            "NSC": st.number_input("NSC (₹)", min_value=0, value=20000, step=1000),
-            "ELSS": st.number_input("ELSS (₹)", min_value=0, value=25000, step=1000),
+            "PPF": st.number_input("PPF (₹)", min_value=0, value=0, step=1000),
+            "EPF": st.number_input("EPF (₹)", min_value=0, value=0, step=1000),
+            "NSC": st.number_input("NSC (₹)", min_value=0, value=0, step=1000),
+            "ELSS": st.number_input("ELSS (₹)", min_value=0, value=0, step=1000),
         }
     with col2b:
         deductions.update({
-            "Life Insurance": st.number_input("Life Insurance (₹)", min_value=0, value=15000, step=1000),
-            "FD (5-year)": st.number_input("FD (5-year) (₹)", min_value=0, value=20000, step=1000),
-            "Home Loan Principal": st.number_input("Home Loan Principal (₹)", min_value=0, value=30000, step=1000),
-            "Others": st.number_input("Other 80C Deductions (₹)", min_value=0, value=10000, step=1000),
+            "Life Insurance": st.number_input("Life Insurance (₹)", min_value=0, value=0, step=1000),
+            "FD (5-year)": st.number_input("FD (5-year) (₹)", min_value=0, value=0, step=1000),
+            "Home Loan Principal": st.number_input("Home Loan Principal (₹)", min_value=0, value=0, step=1000),
+            "Others": st.number_input("Other 80C Deductions (₹)", min_value=0, value=0, step=1000),
         })
 
 if st.button("Compare Tax Regimes"):
