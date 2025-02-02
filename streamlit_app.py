@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import base64
-import openai
+import google.generativeai as genai
 
 # Function to create the Indian flag background CSS
 def add_bg_with_transparency():
@@ -73,18 +73,16 @@ def compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_sa
     return tax_old, tax_new, better_option
 
 def get_tax_advice(deductions):
-    openai.api_key = "YOUR_OPENAI_API_KEY"
+    genai.configure(api_key="AIzaSyBbYmZsxYFBVlfRDm14VwVlXNpxoiUYfmc")
+    model = genai.GenerativeModel("gemini-2.0-flash-exp")
     prompt = f"Based on these deductions: {deductions}, what are some additional ways to save tax in India?"
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "system", "content": "You are a tax expert."}, {"role": "user", "content": prompt}]
-    )
-    return response["choices"][0]["message"]["content"]
+    response = model.generate_content(prompt)
+    return response.text if response else "No advice available."
 
 # Apply the background and creator text
 st.set_page_config(page_title="Tax Regime Comparator", layout="wide")
 st.markdown(add_bg_with_transparency(), unsafe_allow_html=True)
-st.markdown('<div class="creator-text">Made by Share Slayer</div>', unsafe_allow_html=True)
+st.markdown('<div class="creator-text">Made by Shade Slayer</div>', unsafe_allow_html=True)
 
 st.title("💰 Tax Regime Comparator: Old vs New")
 
