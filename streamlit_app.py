@@ -38,10 +38,18 @@ def calculate_tax_old_regime(income, std_deduction=True, hra=0, deductions={}):
     total_deductions = (75000 if std_deduction else 0) + hra
     
     # Calculate total deductions excluding 80C (which is already capped)
-    non_80c_deductions = sum(value for key, value in deductions.items() if not key.startswith("80C_"))
     total_80c = min(sum(value for key, value in deductions.items() if key.startswith("80C_")), 150000)
     
-    total_deductions += non_80c_deductions + total_80c
+    # Apply limits to other deductions
+    limited_deductions = {
+        "80D": min(deductions.get("80D", 0), 25000),
+        "80CCD(1B)": min(deductions.get("80CCD(1B)", 0), 50000),
+        "80TTA/80TTB": min(deductions.get("80TTA/80TTB", 0), 10000),
+        "24(b)": min(deductions.get("24(b)", 0), 200000),
+        "80E": deductions.get("80E", 0)  # No limit for education loan interest
+    }
+    
+    total_deductions += sum(limited_deductions.values()) + total_80c
     taxable_income = max(income - total_deductions, 0)
     
     tax = 0
@@ -79,22 +87,35 @@ def compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_sa
     return tax_old, tax_new, better_option, hra_exempt
 
 def get_tax_advice(income, hra_exempt, deductions, tax_old, tax_new):
-    total_80c = min(sum(value for key, value in deductions.items() if key.startswith("80C_")), 150000)
-    max_80c = 150000
-    max_80d = 25000
-    non_80c_deductions = sum(value for key, value in deductions.items() if not key.startswith("80C_"))
+    # Define section limits
+    limits = {
+        "80C": 150000,
+        "80D": 25000,
+        "80CCD(1B)": 50000,
+        "80TTA/80TTB": 10000,
+        "24(b)": 200000
+    }
     
-    remaining_80c = max_80c - total_80c
-    potential_savings = remaining_80c + (max_80d - deductions.get("80D", 0))
-    tax_savings = potential_savings * 0.3
+    total_80c = min(sum(value for key, value in deductions.items() if key.startswith("80C_")), limits["80C"])
     
     advice = []
-    if remaining_80c > 0:
+    
+    # Check each section for remaining deduction potential
+    if total_80c < limits["80C"]:
+        remaining_80c = limits["80C"] - total_80c
         advice.append(f"You can save up to ₹{remaining_80c:,.2f} more under Section 80C.")
     
-    if deductions.get("80D", 0) < max_80d:
-        remaining_80d = max_80d - deductions.get("80D", 0)
+    if deductions.get("80D", 0) < limits["80D"]:
+        remaining_80d = limits["80D"] - deductions.get("80D", 0)
         advice.append(f"You can claim up to ₹{remaining_80d:,.2f} more under Section 80D for health insurance.")
+    
+    if deductions.get("80CCD(1B)", 0) < limits["80CCD(1B)"]:
+        remaining_nps = limits["80CCD(1B)"] - deductions.get("80CCD(1B)", 0)
+        advice.append(f"You can invest up to ₹{remaining_nps:,.2f} more in NPS under Section 80CCD(1B).")
+    
+    if deductions.get("24(b)", 0) < limits["24(b)"]:
+        remaining_home_loan = limits["24(b)"] - deductions.get("24(b)", 0)
+        advice.append(f"You can claim up to ₹{remaining_home_loan:,.2f} more in home loan interest under Section 24(b).")
     
     if not advice:
         advice.append("You are utilizing your deductions well. Consider the regime with lower tax liability.")
@@ -157,13 +178,29 @@ with col2:
 
 with col3:
     st.markdown("### Other Deductions")
-    deductions.update({
-        "80D": st.number_input("Section 80D (Health Insurance) (₹)", min_value=0, value=20000, step=1000),
-        "80CCD(1B)": st.number_input("Section 80CCD(1B) - NPS (₹)", min_value=0, value=0, step=1000),
-        "80TTA/80TTB": st.number_input("Section 80TTA/80TTB - Interest Income (₹)", min_value=0, value=0, step=1000),
-        "24(b)": st.number_input("Section 24(b) - Home Loan Interest (₹)", min_value=0, value=0, step=1000),
-        "80E": st.number_input("Section 80E - Education Loan Interest (₹)", min_value=0, value=0, step=1000)
-    })
+    
+    # 80D with limit
+    deductions["80D"] = st.number_input("Section 80D (Health Insurance) (₹)", min_value=0, value=0, step=1000, max_value=25000)
+    if deductions["80D"] == 25000:
+        st.warning("Maximum limit for Section 80D reached")
+    
+    # 80CCD(1B) with limit
+    deductions["80CCD(1B)"] = st.number_input("Section 80CCD(1B) - NPS (₹)", min_value=0, value=0, step=1000, max_value=50000)
+    if deductions["80CCD(1B)"] == 50000:
+        st.warning("Maximum limit for Section 80CCD(1B) reached")
+    
+    # 80TTA/80TTB with limit
+    deductions["80TTA/80TTB"] = st.number_input("Section 80TTA/80TTB - Interest Income (₹)", min_value=0, value=0, step=1000, max_value=10000)
+    if deductions["80TTA/80TTB"] == 10000:
+        st.warning("Maximum limit for Section 80TTA/80TTB reached")
+    
+    # 24(b) with limit
+    deductions["24(b)"] = st.number_input("Section 24(b) - Home Loan Interest (₹)", min_value=0, value=0, step=1000, max_value=200000)
+    if deductions["24(b)"] == 200000:
+        st.warning("Maximum limit for Section 24(b) reached")
+    
+    # 80E (no limit)
+    deductions["80E"] = st.number_input("Section 80E - Education Loan Interest (₹)", min_value=0, value=0, step=1000)
 
 if st.button("Compare Tax Regimes"):
     with st.spinner("Generating tax advice..."):
