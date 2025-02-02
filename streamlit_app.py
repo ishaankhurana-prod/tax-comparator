@@ -2,18 +2,28 @@ import streamlit as st
 import pandas as pd
 import base64
 
-def set_background():
-    flag_url = "https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg"
-    background_style = f"""
-        <style>
-        .stApp {{
-            background: url({flag_url}) no-repeat center center fixed;
-            background-size: cover;
-            opacity: 0.1;
-        }}
-        </style>
+# Function to create the Indian flag background CSS
+def add_bg_with_transparency():
+    return """
+    <style>
+    .stApp {
+        background-image: linear-gradient(
+            rgba(255, 153, 51, 0.2),
+            rgba(255, 255, 255, 0.2),
+            rgba(19, 136, 8, 0.2)
+        );
+        background-size: cover;
+    }
+    
+    .creator-text {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.5);
+    }
+    </style>
     """
-    st.markdown(background_style, unsafe_allow_html=True)
 
 def calculate_hra(rent_paid, hra_received, basic_salary):
     annual_rent_paid = rent_paid * 12
@@ -61,8 +71,11 @@ def compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_sa
     better_option = "Old Regime" if tax_old < tax_new else "New Regime"
     return tax_old, tax_new, better_option
 
+# Apply the background and creator text
 st.set_page_config(page_title="Tax Regime Comparator", layout="wide")
-set_background()
+st.markdown(add_bg_with_transparency(), unsafe_allow_html=True)
+st.markdown('<div class="creator-text">Made by Share Slayer</div>', unsafe_allow_html=True)
+
 st.title("💰 Tax Regime Comparator: Old vs New")
 
 st.markdown("### Enter Your Details")
@@ -90,7 +103,6 @@ with col2:
         deductions.update({
             "Life Insurance": st.number_input("Life Insurance (₹)", min_value=0, value=15000, step=1000),
             "FD (5-year)": st.number_input("FD (5-year) (₹)", min_value=0, value=20000, step=1000),
-            "Tuition Fees": st.number_input("Tuition Fees (₹)", min_value=0, value=50000, step=1000),
             "Home Loan Principal": st.number_input("Home Loan Principal (₹)", min_value=0, value=30000, step=1000),
             "Others": st.number_input("Other 80C Deductions (₹)", min_value=0, value=10000, step=1000),
         })
@@ -102,5 +114,3 @@ with col_top2:
         st.metric(label="Old Regime Tax", value=f"₹{tax_old:,.2f}")
         st.metric(label="New Regime Tax", value=f"₹{tax_new:,.2f}")
         st.success(f"🎯 **Better Option: {better_option}**")
-
-st.markdown("<p style='text-align: center; font-size: 12px;'>Made by KOL Thu</p>", unsafe_allow_html=True)
