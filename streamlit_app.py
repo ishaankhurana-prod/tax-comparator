@@ -85,9 +85,13 @@ with col1:
     st.markdown("### Income & HRA Details")
     income = st.number_input("Annual Gross Income (₹)", min_value=0, value=1200000)
     std_deduction = st.radio("Apply Standard Deduction (₹75,000)?", ["Yes", "No"], horizontal=True) == "Yes"
-    rent_paid = st.number_input("Monthly Rent Paid (₹)", min_value=0, value=20000)
-    hra_received = st.number_input("Monthly HRA Received (₹)", min_value=0, value=12500)
-    basic_salary = st.number_input("Monthly Basic Salary (₹)", min_value=0, value=50000)
+    col1a, col1b, col1c = st.columns(3)
+    with col1a:
+        rent_paid = st.number_input("Rent Paid (₹)", min_value=0, value=20000)
+    with col1b:
+        hra_received = st.number_input("HRA Received (₹)", min_value=0, value=12500)
+    with col1c:
+        basic_salary = st.number_input("Basic Salary (₹)", min_value=0, value=50000)
 
 with col2:
     st.markdown("### Deductions (Old Regime)")
