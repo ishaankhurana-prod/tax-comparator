@@ -121,7 +121,7 @@ def get_tax_advice(income, hra_exempt, deductions, tax_old, tax_new):
         advice.append("You are utilizing your deductions well. Consider the regime with lower tax liability.")
     
     advice_text = "\n".join(advice)
-    return f"{advice_text}\n\nIf you would like to have me look at your investments and taxes, contact me at topmate/yourfinadvisor."
+    return f"{advice_text}\n\nIf you would like to have me look at your investments and taxes, contact me at https://topmate.io/ishaankhurana"
 
 def get_gemini_advice(income, deductions):
     prompt = f"""
