@@ -158,7 +158,7 @@ def get_gemini_advice(income, deductions):
     return response.text if response else "Unable to generate advice."
 
 # Apply the background and creator text
-st.set_page_config(page_title="Tax Regime Comparator", layout="wide")
+st.set_page_config(page_title="Tax Regime Comparator", layout="narrow")
 st.markdown(add_bg_with_transparency(), unsafe_allow_html=True)
 st.markdown('<div class="creator-text">Made by Ishaan Khurana</div>', unsafe_allow_html=True)
 
