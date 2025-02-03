@@ -67,16 +67,33 @@ def calculate_tax_old_regime(income, std_deduction=True, hra=0, deductions={}):
 def calculate_tax_new_regime(income, std_deduction=True):
     taxable_income = income - (75000 if std_deduction else 0)
     tax = 0
-    slabs = [(400000, 0.05), (800000, 0.1), (1200000, 0.15), (1600000, 0.2), (2000000, 0.25)]
+    slabs = [
+        (400000, 0),
+        (800000, 0.05),
+        (1200000, 0.1),
+        (1600000, 0.15),
+        (2000000, 0.2),
+        (2400000, 0.25)
+    ]
     
-    for limit, rate in slabs:
+    for i, (limit, rate) in enumerate(slabs):
         if taxable_income > limit:
-            tax += (min(taxable_income, limit * 2) - limit) * rate
+            if i == 0:
+                tax += (min(taxable_income, slabs[i+1][0]) - limit) * rate
+            else:
+                tax += (min(taxable_income, slabs[i+1][0]) - limit) * rate
+        else:
+            break
     
     if taxable_income > 2400000:
         tax += (taxable_income - 2400000) * 0.3
     
+    # Apply rebate for income up to 12 lakhs
+    if taxable_income <= 1200000:
+        tax = 0
+    
     return tax
+
 
 def compare_tax_regimes(income, std_deduction, rent_paid, hra_received, basic_salary, deductions):
     hra_exempt = calculate_hra(rent_paid, hra_received, basic_salary)
